@@ -1,7 +1,7 @@
 import json
 import mysql.connector
 
-class config:
+class Config:
     def __init__(self, config_path='config.json'):
         self.config = self.load_sql_config(config_path)
         for i in ['host', 'user', 'password', 'database']:
@@ -14,13 +14,16 @@ class config:
 
     def get(self, key, default=None):
         return self.config.get(key, default)
-    def load_sql_config(self,config_path='sql_config.json'):
-        with open(config_path, 'r') as file:
-            config = json.load(file)
+    def load_sql_config(self,config_path):
+        try:
+            with open(config_path, 'r') as file:
+                config = json.load(file)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"Config file not found: {config_path}")
         return config
     def __repr__(self):
         return f"SQL Config: {type(self.config)}:{self.config}"
-class connect_sql:
+class Connect_sql:
     def __init__(self, config):
         self.config = config
         self.connection = self.create_connection()
@@ -42,11 +45,13 @@ class connect_sql:
 
     def __exit__(self):
         if self.connection:
+            self.cursor.close()
+            print("MySQL cursor closed.",end='')
             self.connection.close()
             print("MySQL connection closed.")
 
-sql_config = config()
-db_connection = connect_sql(sql_config)
-db_connection.cursor.execute("SELECT * FROM test_ringo LIMIT 5;")
-results = db_connection.cursor.fetchall()
-print(results)
+# sql_config = Config()
+# db_connection = Connect_sql(sql_config)
+# db_connection.cursor.execute("SELECT * FROM test_ringo LIMIT 5;")
+# results = db_connection.cursor.fetchall()
+# print(results)
