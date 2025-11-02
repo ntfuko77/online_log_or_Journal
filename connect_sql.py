@@ -5,7 +5,9 @@ class Config:
     def __init__(self, config_path='config.json'):
         self.config = self.load_sql_config(config_path)
         if 'sql_connect' in self.config:
+            self.other =   self.config['other_settings'] if 'other_settings' in self.config else {}
             self.config = self.config['sql_connect']
+
         else:
             raise KeyError("Missing 'sql_connect' section in config file.")
         for i in ['host', 'user', 'password', 'database']:
