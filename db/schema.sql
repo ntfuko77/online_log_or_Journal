@@ -1,3 +1,5 @@
+-- https://dbdiagram.io/d/690a58d16735e111703da731
+
 create table if not exists category(
 category_id INT PRIMARY KEY AUTO_INCREMENT,
 category_name CHAR(10) NOT NULL
