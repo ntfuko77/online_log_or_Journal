@@ -5,7 +5,7 @@ class Config:
     def __init__(self, config_path='config.json'):
         self.config = self.load_sql_config(config_path)
         if 'sql_connect' in self.config:
-            self.other =   self.config['other_settings'] if 'other_settings' in self.config else {}
+            self.other =  self.config['other_settings'] if 'other_settings' in self.config else {}
             self.config = self.config['sql_connect']
 
         else:
@@ -41,7 +41,8 @@ class Connect_sql:
                 host=self.config.get('host'),
                 user=self.config.get('user'),
                 password=self.config.get('password'),
-                database=self.config.get('database')
+                database=self.config.get('database'),
+                port=self.config.get('port', 3306)
             )
             print("Connection to MySQL database established successfully.")
             return connection
