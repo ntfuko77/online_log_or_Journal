@@ -1,8 +1,9 @@
 -- https://dbdiagram.io/d/690a58d16735e111703da731
 
+-- Tables
 create table if not exists category(
 category_id INT PRIMARY KEY AUTO_INCREMENT,
-category_name CHAR(10) NOT NULL
+category_name CHAR(10) NOT NULL UNIQUE
 );
 create table if not exists author(
 author_id INT primary KEY auto_increment,
@@ -15,8 +16,8 @@ author_id INT,
 foreign key (author_id) references author(author_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 CREATE TABLE IF NOT EXISTS tag(
-tag_Name VARCHAR(50) UNIQUE,
-tag_Id INT PRIMARY KEY AUTO_INCREMENT,
+tag_name VARCHAR(50) UNIQUE,
+tag_id INT PRIMARY KEY AUTO_INCREMENT,
 valence INT CHECK (valence IN (0,1,-1)),
 parent_tag_id INT,
 category_id INT,
