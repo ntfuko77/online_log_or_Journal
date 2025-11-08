@@ -7,7 +7,7 @@ category_name CHAR(10) NOT NULL UNIQUE
 );
 create table if not exists author(
 author_id INT primary KEY auto_increment,
-author_name VARCHAR(50) NOT NULL
+author_name VARCHAR(50) NOT NULL UNIQUE
 );
 create table if not exists people(
 people_id INT PRIMARY KEY AUTO_INCREMENT,

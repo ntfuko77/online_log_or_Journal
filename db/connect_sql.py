@@ -57,8 +57,8 @@ class Connect_sql:
             self.connection.close()
             print("MySQL connection closed.")
 
-sql_config = Config()
-db_connection = Connect_sql(sql_config)
-db_connection.cursor.execute("SELECT * FROM category LIMIT 5;")
-results = db_connection.cursor.fetchall()
-print(results)
+# sql_config = Config()
+# db_connection = Connect_sql(sql_config)
+# db_connection.cursor.execute("SELECT * FROM category LIMIT 5;")
+# results = db_connection.cursor.fetchall()
+# print(results)
