@@ -1,5 +1,22 @@
 import IOsql
 
+class entity():
+    def __init__(self,data,description:list,author_dict:dict,people_dict:dict):
+        if isinstance(description[0],tuple):
+            description=[i[0] for i in description]
+        try:
+            for i in range(len(description)):
+                setattr(self,description[i],data[i])
+            self.author_name=author_dict.get(self.author_id,'Unknown Author')
+            self.people_name=people_dict.get(self.people_id,'Unknown Person')
+        except Exception as e:
+            print(f"Error initializing entity: {e}")
+    def __repr__(self):
+        return f"Entity({self.__dict__})"
+    
+
+
+
 class Models():
     def __init__(self, config_path=r'C:\Users\lin\Desktop\data\program\product\online_log\db\config.json'):
         self.db = IOsql.IOsql(config_path)
@@ -8,7 +25,8 @@ class Models():
     def reset_data(self):
         try:
             self.categories= self.get_all_categories()
-            self.authors= self.get_authors()
+            self.author= self.get_author()
+            self.people= self.get_all_people(self.author['author_id'])
         except Exception as e:
             print(f"Error resetting data: {e}")
     def get_all_categories(self):
@@ -18,8 +36,7 @@ class Models():
         except Exception as e:
             print(f"Error retrieving categories: {e}")
             return None
-    def get_authors(self, limit=1)->int:
-        
+    def get_author(self, limit=1)->dict:
         try:
             target=self.db.config.other['author_name']
             query = "SELECT * FROM author  WHERE author_name=%s LIMIT %s;"
@@ -29,12 +46,33 @@ class Models():
         except Exception as e:
             print(f"Error retrieving authors: {e}")
             return 
+    def get_all_people(self,author_id:int):
+        try:
+            query = "SELECT * FROM people WHERE author_id=1 or author_id=%s;"
+            row=self.db.execute_query(query,(author_id,))
+            for i in row:
+                out={i[0]:i[1]}
+            return out
+        except Exception as e:
+            print(f"Error retrieving all people: {e}")
+            return None
+    def get_entity_by_author(self):
+        try:
+            query = "SELECT * FROM entity WHERE author_id=%s;"
+            row=self.db.execute_query(query,(self.author['author_id'],))
+            return [entity(i,self.db.cursor.description,self.author,self.people) for i in row]
+        except Exception as e:
+            print(f"Error retrieving entities by author: {e}")
+            return None
 
 def debug():
     models = Models()
-    print("Categories:", models.categories)
-    print("Authors:", models.authors)
-    print(models.db.config.other['author_name'])
+    # print("Categories:", models.categories)
+    # print("Authors:", models.author)
+    # print("People:", models.people)
+    # print(models.db.config.other['author_name'])
+    print("Entities by Author:", models.get_entity_by_author())
+    
     return models
 
 if __name__ == "__main__":
