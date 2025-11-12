@@ -1,24 +1,33 @@
 import IOsql
 
 class entity():
-    def __init__(self,data,description:list,author_dict:dict,people_dict:dict):
+    def __init__(self,data,description:list,author_dict:dict,people_dict:dict,empty=False):
         if isinstance(description[0],tuple):
             description=[i[0] for i in description]
+        elif empty:
+            description=description[0]
         try:
             for i in range(len(description)):
                 setattr(self,description[i],data[i])
+            if empty:return
             self.author_name=author_dict.get(self.author_id,'Unknown Author')
             self.people_name=people_dict.get(self.people_id,'Unknown Person')
         except Exception as e:
             print(f"Error initializing entity: {e}")
+    @classmethod
+    def empty(cls):
+        description=['content','start_time', 'author_name', 'related_people', 'activity', 'location']
+        return cls([None for i in range(len(description))],[description],{},{},True)
+
     def __repr__(self):
         return f"Entity({self.__dict__})"
     
 
 
 
-class Models():
-    def __init__(self, config_path=r'C:\Users\lin\Desktop\data\program\product\online_log\db\config.json'):
+class ModelService():
+    
+    def __init__(self, config_path):
         self.db = IOsql.IOsql(config_path)
         self.cursor = self.db.cursor
         self.reset_data()
@@ -64,14 +73,17 @@ class Models():
         except Exception as e:
             print(f"Error retrieving entities by author: {e}")
             return None
-
+class Models():
+    def __init__(self, config_path):
+        pass
 def debug():
-    models = Models()
+    models = ModelService(r'db\config.json')
     # print("Categories:", models.categories)
     # print("Authors:", models.author)
     # print("People:", models.people)
     # print(models.db.config.other['author_name'])
     print("Entities by Author:", models.get_entity_by_author())
+    print("empty entity:", entity.empty())
     
     return models
 
