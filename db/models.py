@@ -1,6 +1,9 @@
 import IOsql
 
 class entity():
+    #example Entity({'entity_id': 1, 'content': '寫程式使我興奮!', 'create_at': datetime.datetime(2025, 11, 4, 20, 16, 11), 
+    # 'start_time': datetime.datetime(2025, 11, 4, 20, 16, 11), 'author_id': 2, 'related_people_id': None, 'activity': '剛剛同時和月和霧聊天', 
+    # 'location': '家裡', 'author_name': 'Unknown Author'})
     def __init__(self,data,description:list,author_dict:dict,people_dict:dict,empty=False):
         if isinstance(description[0],tuple):
             description=[i[0] for i in description]
@@ -26,7 +29,6 @@ class entity():
 
 
 class ModelService():
-    
     def __init__(self, config_path):
         self.db = IOsql.IOsql(config_path)
         self.cursor = self.db.cursor
@@ -73,16 +75,19 @@ class ModelService():
         except Exception as e:
             print(f"Error retrieving entities by author: {e}")
             return None
+class ModelStorageService():...
+
 class Models():
     def __init__(self, config_path):
-        pass
+        self.service = ModelService(config_path)
+    
 def debug():
-    models = ModelService(r'db\config.json')
+    models = Models(r'db\config.json')
     # print("Categories:", models.categories)
     # print("Authors:", models.author)
     # print("People:", models.people)
     # print(models.db.config.other['author_name'])
-    print("Entities by Author:", models.get_entity_by_author())
+    print("Entities by Author:", models.service.get_entity_by_author())
     print("empty entity:", entity.empty())
     
     return models
