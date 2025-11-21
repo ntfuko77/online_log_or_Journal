@@ -1,6 +1,7 @@
 from . import IOsql
 
 class entity():
+    attr_name=['content','start_time', 'author_name', 'related_people', 'activity', 'location']
     #example Entity({'entity_id': 1, 'content': '寫程式使我興奮!', 'create_at': datetime.datetime(2025, 11, 4, 20, 16, 11), 
     # 'start_time': datetime.datetime(2025, 11, 4, 20, 16, 11), 'author_id': 2, 'related_people_id': None, 'activity': '剛剛同時和月和霧聊天', 
     # 'location': '家裡', 'author_name': 'Unknown Author'})
@@ -13,13 +14,15 @@ class entity():
             for i in range(len(description)):
                 setattr(self,description[i],data[i])
             if empty:return
-            self.author_name=author_dict.get(self.author_id,'Unknown Author')
-            self.people_name=people_dict.get(self.people_id,'Unknown Person')
+            serch_key = getattr(self,"author_id",0)
+            self.author_name=author_dict.get(serch_key,'Unknown Author')
+            serch_key = getattr(self,"people_id",0)
+            self.people_name=people_dict.get(serch_key,'Unknown Person')
         except Exception as e:
             print(f"Error initializing entity: {e}")
     @classmethod
     def empty(cls):
-        description=['content','start_time', 'author_name', 'related_people', 'activity', 'location']
+        description=cls.attr_name
         return cls([None for i in range(len(description))],[description],{},{},True)
 
     def __repr__(self):
