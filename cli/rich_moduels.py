@@ -1,5 +1,7 @@
 import rich
 from db import models
+#- external dependency:rich
+
 
 def debug():
     mod = models.Models(r'db\config.json')
