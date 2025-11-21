@@ -1,4 +1,4 @@
-import IOsql
+from . import IOsql
 
 class entity():
     #example Entity({'entity_id': 1, 'content': '寫程式使我興奮!', 'create_at': datetime.datetime(2025, 11, 4, 20, 16, 11), 
@@ -75,7 +75,18 @@ class ModelService():
         except Exception as e:
             print(f"Error retrieving entities by author: {e}")
             return None
-class ModelStorageService():...
+class ModelRespository():
+    def __init__(self, cursor):
+        self.cursor = cursor
+    def push_tag(self, tag_name: str):
+        ... # Implementation for pushing a tag to the database
+    def push_category(self, category_name: str):
+        ... # Implementation for pushing a category to the database
+    def push_entity(self, entity_data: dict):
+        ... # Implementation for pushing an entity to the database
+    def delete_entity(self, entity_id: int):
+        ... # Implementation for deleting an entity from the database
+
 
 class Models():
     def __init__(self, config_path):

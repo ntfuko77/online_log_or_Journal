@@ -1,4 +1,4 @@
-from connect_sql import Config, Connect_sql
+from .connect_sql import Config, Connect_sql
 
 class IOsql:
     def __init__(self, config_path='config.json'):

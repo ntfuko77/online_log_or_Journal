@@ -1,5 +1,6 @@
 import json
 import mysql.connector
+#mysql-connector-python ?
 
 class Config:
     def __init__(self, config_path='config.json'):
