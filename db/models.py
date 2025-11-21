@@ -5,7 +5,7 @@ class entity():
     #example Entity({'entity_id': 1, 'content': '寫程式使我興奮!', 'create_at': datetime.datetime(2025, 11, 4, 20, 16, 11), 
     # 'start_time': datetime.datetime(2025, 11, 4, 20, 16, 11), 'author_id': 2, 'related_people_id': None, 'activity': '剛剛同時和月和霧聊天', 
     # 'location': '家裡', 'author_name': 'Unknown Author'})
-    def __init__(self,data,description:list,author_dict:dict,people_dict:dict,empty=False):
+    def __init__(self,data,description:list,author_dict:dict,people_dict:dict,tag_dict:dict,empty=False):
         if isinstance(description[0],tuple):
             description=[i[0] for i in description]
         elif empty:
@@ -15,15 +15,31 @@ class entity():
                 setattr(self,description[i],data[i])
             if empty:return
             serch_key = getattr(self,"author_id",0)
-            self.author_name=author_dict.get(serch_key,'Unknown Author')
+
+            if author_dict.get("author_id",None)==serch_key:
+                self.author_name=author_dict.get('author_name','Unknown Author')
+
+            else:
+                self.author_name='Unknown Author'
+
+
+
             serch_key = getattr(self,"people_id",0)
-            self.people_name=people_dict.get(serch_key,'Unknown Person')
+            if people_dict.get("people_id",None)==serch_key:
+                self.people_name=people_dict.get('people_name','Unknown Person(not found)')
+            else:
+                self.people_name='Unknown Person'
+            search_key = getattr(self,"tag_id",0)
+            if tag_dict.get("tag_id",None)==search_key:
+                self.tag_name=tag_dict.get('tag_name','Unknown Tag(not found)')
+            else:
+                self.tag_name='Unknown Tag'
         except Exception as e:
             print(f"Error initializing entity: {e}")
     @classmethod
     def empty(cls):
         description=cls.attr_name
-        return cls([None for i in range(len(description))],[description],{},{},True)
+        return cls([None for i in range(len(description))],[description],{},{},{},True)
 
     def __repr__(self):
         return f"Entity({self.__dict__})"
@@ -41,6 +57,7 @@ class ModelService():
             self.categories= self.get_all_categories()
             self.author= self.get_author()
             self.people= self.get_all_people(self.author['author_id'])
+            self.tag= self.get_all_tags()
         except Exception as e:
             print(f"Error resetting data: {e}")
     def get_all_categories(self):
@@ -70,11 +87,22 @@ class ModelService():
         except Exception as e:
             print(f"Error retrieving all people: {e}")
             return None
+    def get_all_tags(self):
+        try:
+            query = "SELECT * FROM tag;"
+            row=self.db.execute_query(query)
+            out={}
+            for i in row:
+                out[i[0]]=i[1]
+            return out
+        except Exception as e:
+            print(f"Error retrieving all tags: {e}")
+            return None
     def get_entity_by_author(self):
         try:
-            query = "SELECT * FROM entity WHERE author_id=%s;"
+            query = "SELECT * FROM entity_with_tags WHERE author_id=%s;"
             row=self.db.execute_query(query,(self.author['author_id'],))
-            return [entity(i,self.db.cursor.description,self.author,self.people) for i in row]
+            return [entity(i,self.db.cursor.description,self.author,self.people,self.tag) for i in row]
         except Exception as e:
             print(f"Error retrieving entities by author: {e}")
             return None
