@@ -5,7 +5,7 @@ class entity():
     #example Entity({'entity_id': 1, 'content': '寫程式使我興奮!', 'create_at': datetime.datetime(2025, 11, 4, 20, 16, 11), 
     # 'start_time': datetime.datetime(2025, 11, 4, 20, 16, 11), 'author_id': 2, 'related_people_id': None, 'activity': '剛剛同時和月和霧聊天', 
     # 'location': '家裡', 'author_name': 'Unknown Author'})
-    def __init__(self,data,description:list,author_dict:dict,people_dict:dict,tag_dict:dict,empty=False):
+    def __init__(self,data,description:list,author_dict:dict,people_dict:dict,tag_dict:dict,category_dict:dict,empty=False):
         if isinstance(description[0],tuple):
             description=[i[0] for i in description]
         elif empty:
@@ -30,12 +30,22 @@ class entity():
             else:
                 self.people_name='Unknown Person'
             search_key = getattr(self,"tag_id",0)
-            if tag_dict.get("tag_id",None)==search_key:
-                self.tag_name=tag_dict.get('tag_name','Unknown Tag(not found)')
+            
+            if search_key in tag_dict:
+                self.tag_name=tag_dict.get(search_key,'Unknown Tag(not found)')
             else:
                 self.tag_name='Unknown Tag'
+            search_key = getattr(self,"category_id",0)
+            print(f"Debug: category_id={getattr(self,'category_id',None)}, category_dict={category_dict}")
+
+            if getattr(self,'category_id',0) in category_dict:
+                self.category_name=category_dict.get(search_key,'Unknown Category(not found)')
+            else:
+                self.category_name='Unknown Category'
+
         except Exception as e:
             print(f"Error initializing entity: {e}")
+            
     @classmethod
     def empty(cls):
         description=cls.attr_name
@@ -63,7 +73,12 @@ class ModelService():
     def get_all_categories(self):
         try:
             query = "SELECT * FROM category;"
-            return self.db.execute_query(query)
+            row=self.db.execute_query(query)
+            print(row)
+            out={}
+            for i in row:
+                out[i[0]]=i[1]
+            return out
         except Exception as e:
             print(f"Error retrieving categories: {e}")
             return None
@@ -93,7 +108,7 @@ class ModelService():
             row=self.db.execute_query(query)
             out={}
             for i in row:
-                out[i[0]]=i[1]
+                out[i[1]]=i[0]
             return out
         except Exception as e:
             print(f"Error retrieving all tags: {e}")
@@ -102,7 +117,7 @@ class ModelService():
         try:
             query = "SELECT * FROM entity_with_tags WHERE author_id=%s;"
             row=self.db.execute_query(query,(self.author['author_id'],))
-            return [entity(i,self.db.cursor.description,self.author,self.people,self.tag) for i in row]
+            return [entity(i,self.db.cursor.description,self.author,self.people,self.tag,self.categories) for i in row]
         except Exception as e:
             print(f"Error retrieving entities by author: {e}")
             return None
