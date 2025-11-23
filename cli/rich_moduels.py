@@ -2,7 +2,10 @@ from rich.console import Console
 from rich.table import Table
 from rich.pretty import Pretty
 from db import models
+from enum import Enum
 #- external dependency:rich
+class Base(Enum):
+    path=r'db\config.json'
 
 class EntityTable:
     base_attr=['category_name','content','start_time','author_name','tag_name']
@@ -53,12 +56,19 @@ class page():
         if page_size<=0 or page_size>100:
             raise ValueError("page_size must be between 1 and 100.")
         self.page_size=page_size
+def console_init():
+    mod = models.Models(Base.path.value)
+    console=Console()
+    console.status("Initializing console...")
+    return mod,console
+
+
 
 def debug():
-    mod = models.Models(r'db\config.json')
+    mod,console = console_init()
     data=mod.service.get_entity_by_author()
 
-    console=Console()
+
     table=EntityTable.to_rich_table(data[0])
     console.print(table)
     table=tag_table(mod.tag)
