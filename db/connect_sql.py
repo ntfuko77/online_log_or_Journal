@@ -19,6 +19,7 @@ class Config:
         if type(self.config) is not dict:
             raise TypeError("Config file must contain a JSON object.")
         
+        self.config_load_status=200
         print("SQL configuration loaded successfully.")
 
     def get(self, key, default=None):
@@ -47,6 +48,7 @@ class Connect_sql:
                 database=self.config.get('database'),
                 port=self.config.get('port', 3306)
             )
+            self.connection_status=200
             print("Connection to MySQL database established successfully.")
             return connection
         except mysql.connector.Error as err:

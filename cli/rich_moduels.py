@@ -46,6 +46,13 @@ def tag_table(data):
     for i in data:
         table.add_row(str(i),str(data[i]))
     return table
+class page():
+    def __init__(self,page_size:int):
+        if not isinstance(page_size,int):
+            raise ValueError("page_size must be an integer.")
+        if page_size<=0 or page_size>100:
+            raise ValueError("page_size must be between 1 and 100.")
+        self.page_size=page_size
 
 def debug():
     mod = models.Models(r'db\config.json')

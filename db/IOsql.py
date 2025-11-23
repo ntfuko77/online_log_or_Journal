@@ -13,3 +13,7 @@ class IOsql:
         else:
             print("No database connection available.")
             return None
+    @property
+    def state(self):
+        return {'config_status':self.config.config_load_status,
+                'connection_status':self.db_connection.connection_status}
