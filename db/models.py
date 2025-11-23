@@ -36,8 +36,7 @@ class entity():
             else:
                 self.tag_name='Unknown Tag'
             search_key = getattr(self,"category_id",0)
-            print(f"Debug: category_id={getattr(self,'category_id',None)}, category_dict={category_dict}")
-
+            
             if getattr(self,'category_id',0) in category_dict:
                 self.category_name=category_dict.get(search_key,'Unknown Category(not found)')
             else:
@@ -74,7 +73,6 @@ class ModelService():
         try:
             query = "SELECT * FROM category;"
             row=self.db.execute_query(query)
-            print(row)
             out={}
             for i in row:
                 out[i[0]]=i[1]
@@ -137,6 +135,9 @@ class ModelRespository():
 class Models():
     def __init__(self, config_path):
         self.service = ModelService(config_path)
+    @property
+    def tag(self):
+        return self.service.tag
     
 def debug():
     models = Models(r'db\config.json')
