@@ -1,8 +1,12 @@
 import argparse
-import sys
 
 
 
+def args_not_empty(args):
+    for arg in vars(args):
+        if getattr(args, arg) is not None:
+            return True
+    return False
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('-c','--config', type=str, default='config.yaml', help='Path to the configuration file')
