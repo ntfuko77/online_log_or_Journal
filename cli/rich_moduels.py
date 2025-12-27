@@ -68,11 +68,16 @@ def debug():
     mod,console = console_init()
     data=mod.service.get_entity_by_author()
 
+    x=mod.service.tag
+    y=mod.service.categories
+    for i in x:
+        console.print(f"Tag ID: {i} Tag Name: {x[i]} Category Name: {y.get(i,'Unknown Category')}")
 
-    table=EntityTable.to_rich_table(data[0])
-    console.print(table)
-    table=tag_table(mod.tag)
-    console.print(table)
+
+    # table=EntityTable.to_rich_table(data[0])
+    # console.print(table)
+    # table=tag_table(mod.tag)
+    # console.print(table)
 
 
 

@@ -67,6 +67,7 @@ class ModelService():
             self.author= self.get_author()
             self.people= self.get_all_people(self.author['author_id'])
             self.tag= self.get_all_tags()
+            self.view={}
         except Exception as e:
             print(f"Error resetting data: {e}")
     def get_all_categories(self):
@@ -119,6 +120,16 @@ class ModelService():
         except Exception as e:
             print(f"Error retrieving entities by author: {e}")
             return None
+    def view_tag_join_category(self):
+        if self.view.get('tag_category',None):
+            return self.view['tag_category']
+        else:
+            out={}
+            for i in self.tag:
+                out[i]=(self.categories.get(i,'Unknown Category'),self.tag[i])
+            self.view['tag_category']=out
+            return out
+        
 class ModelRespository():
     def __init__(self, cursor):
         self.cursor = cursor
